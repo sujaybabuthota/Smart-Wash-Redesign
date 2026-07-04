@@ -1,23 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CheckCircle2, ChevronDown, Calendar, Phone, MapPin, User, Loader2 } from "lucide-react";
+import { X, CheckCircle2, ChevronDown, Calendar, Phone, MapPin, User, Loader2, AlertCircle } from "lucide-react";
+import { BOOKING_SERVICES, BOOKING_TIME_SLOTS } from "@/features/booking/types/booking";
+import { createBooking } from "@/features/booking/services/bookingService";
 
-const services = [
-  "Premium Laundry",
-  "Steam Press",
-  "Dry Cleaning",
-  "Wash & Fold",
-  "Shoe Laundry",
-  "Saree Rolling",
-];
-
-const timeSlots = [
-  "9:00 AM – 11:00 AM",
-  "11:00 AM – 1:00 PM",
-  "1:00 PM – 3:00 PM",
-  "3:00 PM – 5:00 PM",
-  "5:00 PM – 7:00 PM",
-];
+const services = BOOKING_SERVICES;
+const timeSlots = BOOKING_TIME_SLOTS;
 
 interface Props {
   open: boolean;
@@ -29,6 +17,7 @@ type Step = "form" | "success";
 export function BookingModal({ open, onClose }: Props) {
   const [step, setStep] = useState<Step>("form");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -53,15 +42,22 @@ export function BookingModal({ open, onClose }: Props) {
     e.preventDefault();
     if (!valid) return;
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setStep("success");
+    setError(null);
+    try {
+      await createBooking(form);
+      setStep("success");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
     onClose();
     setTimeout(() => {
       setStep("form");
+      setError(null);
       setForm({ name: "", phone: "", address: "", service: "", date: "", time: "" });
     }, 400);
   };
@@ -238,6 +234,14 @@ export function BookingModal({ open, onClose }: Props) {
                         </select>
                       </Field>
                     </div>
+
+                    {/* Error */}
+                    {error && (
+                      <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-red-50 text-red-600 text-xs font-medium">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                        <span>{error}</span>
+                      </div>
+                    )}
 
                     {/* Submit */}
                     <button
