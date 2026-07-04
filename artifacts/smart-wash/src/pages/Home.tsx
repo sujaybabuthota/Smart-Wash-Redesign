@@ -1,13 +1,13 @@
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { HeroShowcase } from "@/components/sections/HeroShowcase";
-import { ServicesCarousel } from "@/components/sections/ServicesCarousel";
-import { AboutSection } from "@/components/sections/AboutSection";
-import { HowItWorks } from "@/components/sections/HowItWorks";
-import { CtaSection } from "@/components/sections/CtaSection";
-import { BookingModal } from "@/components/BookingModal";
-import { StickyBookingButton } from "@/components/StickyBookingButton";
-import { BookingProvider, useBooking } from "@/context/BookingContext";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { HeroShowcase } from "@/features/home/components/HeroShowcase";
+import { ServicesCarousel } from "@/features/home/components/ServicesCarousel";
+import { AboutSection } from "@/features/home/components/AboutSection";
+import { HowItWorks } from "@/features/home/components/HowItWorks";
+import { CtaSection } from "@/features/home/components/CtaSection";
+import { BookingModal } from "@/features/booking/components/BookingModal";
+import { StickyBookingButton } from "@/features/booking/components/StickyBookingButton";
+import { BookingProvider, useBooking } from "@/features/booking/context/BookingContext";
 
 function HomeContent() {
   const { open, openModal, closeModal } = useBooking();
